@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABCSF Interact Club Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+body {
+    font-family: 'Press Start 2P', cursive;
+    color: #002D72;
+    background: url('mcbg.png') no-repeat center center fixed;
+    background-size: cover;
+    min-height:100vh;
+    overflow:hidden;
+}
+
+/* ===== Smooth Fade Transitions ===== */
+.screen {
+    display:none;
+    opacity:0;
+    width:100%;
+    height:100vh;
+    position:relative;
+    text-align:center;
+    transition: opacity 0.8s ease;
+}
+.active {
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    opacity:1;
+}
+
+/* ===== Header ===== */
+header {
+    position:absolute;
+    top:15px;
+    width:100%;
+    text-align:center;
+}
+header img {
+    width:90px;
+    vertical-align:middle;
+    margin-right:10px;
+}
+header h1 {
+    display:inline-block;
+    font-size:18px;
+    color:#FFD700;
+    text-shadow:0 0 10px #FFD700, 2px 2px 0 #002D72;
+}
+
+/* ===== Footer ===== */
+footer {
+    position:absolute;
+    bottom:10px;
+    width:100%;
+    text-align:center;
+    font-size:10px;
+    color:#002D72;
+    text-shadow:0 0 8px #FFD700;
+}
+
+/* ===== Content boxes ===== */
+.box {
+    background: url('bg txt.png') no-repeat center center;
+    background-size: cover;
+    padding:40px;
+    border:4px solid #FFD700;
+    border-radius:15px;
+    box-shadow:0 0 25px rgba(0,0,0,0.7);
+    max-width:700px;
+    width:90%;
+    text-align:center;
+    animation: floatUp 0.8s ease;
+}
+
+/* ===== Floating entry animation ===== */
+@keyframes floatUp {
+    from { transform: translateY(20px); opacity:0; }
+    to { transform: translateY(0); opacity:1; }
+}
+
+/* ===== Question Box ===== */
+.question-box {
+    background: url('bg txt.png') no-repeat center center;
+    background-size: cover;
+    padding:30px;
+    border:4px solid #FFD700;
+    border-radius:15px;
+    max-width:700px;
+    margin:20px auto;
+    box-shadow:0 0 20px #000;
+    text-align:center;
+}
+#questionIcon { 
+    width:50px; 
+    height:50px;
+    vertical-align:middle; 
+    margin-right:10px; 
+}
+
+/* ===== Buttons ===== */
+button {
+    padding:15px 25px;
+    margin:10px;
+    border:4px solid #FFD700;
+    border-radius:8px;
+    background: linear-gradient(to bottom, #FFD700, #FFC107);
+    color:#002D72;
+    font-family: 'Press Start 2P', cursive;
+    font-size:12px;
+    cursor:pointer;
+    text-shadow:1px 1px 0 rgba(0,0,0,0.3);
+    box-shadow:0 0 10px #FFD700;
+    transition:0.15s;
+}
+button:hover { transform: scale(1.05); box-shadow:0 0 20px #FFD700; }
+button:active { transform: scale(0.95); }
+
+/* ===== Inputs ===== */
+input[type="text"] { 
+    padding:12px; 
+    font-family: 'Press Start 2P', cursive;
+    font-size:12px; 
+    width:80%; 
+    max-width:400px;
+    margin:10px 0; 
+    border-radius:5px; 
+    border:2px solid #FFD700;
+    text-align:center;
+    background:#fff;
+    color:#002D72;
+}
+
+/* ===== Progress Bar ===== */
+.progress-container {
+    width:90%;
+    max-width:600px;
+    background: rgba(255,255,255,0.2);
+    border:3px solid #FFD700;
+    border-radius:10px;
+    margin:20px auto;
+    overflow:hidden;
+    height:20px;
+}
+.progress-bar { 
+    height:100%; 
+    background: linear-gradient(to right, #FFD700, #FFC107);
+    width:0%; 
+    transition: width 0.3s;
+}
+
+/* ===== Leaderboard ===== */
+table { 
+    margin:20px auto; 
+    border-collapse:collapse; 
+    width:90%; 
+    max-width:800px;
+    background: rgba(255,255,255,0.8); 
+    border:4px solid #FFD700;
+    border-radius:10px; 
+    font-size:10px;
+    color:#002D72;
+}
+th, td { 
+    padding:12px 8px; 
+    border:1px solid #FFD700; 
+    text-align:center; 
+}
+th { background:#FFD700; color:#002D72; }
+
+@media (max-width: 600px) {
+    h1 { font-size:16px; }
+    button { font-size:10px; padding:12px 20px; }
+    input[type="text"] { font-size:10px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <img src="rotary.png" alt="Rotary Logo">
+    <h1>HAPPY WORLD INTERACT WEEK</h1>
+</header>
+
+<!-- Welcome Screen -->
+<div id="welcomeScreen" class="screen active">
+    <div class="box">
+        <h2>ABCSF Interact Club Quiz</h2>
+        <p style="font-size:12px; margin:20px;">Test Your Rotary Knowledge!</p>
+        <button onclick="beginQuiz()">Begin</button>
+    </div>
+</div>
+
+<!-- Player Info Screen -->
+<div id="infoScreen" class="screen">
+    <div class="box">
+        <h2>Enter Your Info</h2>
+        <input type="text" id="playerName" placeholder="Name"><br>
+        <input type="text" id="playerCountry" placeholder="Country"><br>
+        <input type="text" id="playerClub" placeholder="Club"><br>
+        <button onclick="startQuiz()">Start Quiz</button>
+    </div>
+</div>
+
+<!-- Quiz Screen -->
+<div id="quizScreen" class="screen">
+    <div class="question-box">
+        <h2>
+            <img id="questionIcon" src="ufg.png" alt="Question Icon">
+            <span id="questionText"></span>
+        </h2>
+        <div id="answerButtons"></div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Score Screen -->
+<div id="scoreScreen" class="screen">
+    <div class="box">
+        <h2 id="finalScore"></h2>
+        <h3 style="color:#002D72;">🏆 Leaderboard 🏆</h3>
+        <table id="leaderboardTable">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Country</th>
+                    <th>Club</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button onclick="restartQuiz()">Play Again</button>
+    </div>
+</div>
+
+<footer>ASJA Boys College San Fernando</footer>
+
+<script>
+// Reset leaderboard each launch
+localStorage.removeItem('mcQuizLeaderboard');
+
+let player = {};
+let section = "general";
+let index = 0;
+let score = 0;
+let leaderboard = [];
+
+const generalQuestions = [
+  {q:"What does INTERACT stand for?", a:"International Action"},
+  {q:"What is the Interact motto?", a:"Service Above Self"},
+  {q:"What is Rotary's famous global campaign?", a:"PolioPlus"},
+  {q:"Who sponsors our Interact club?", a:"Rotary Clubs"},
+  {q:"What’s the theme for this year?", a:"United for Good"}
+];
+
+const tfQuestions = [
+  {q:"Interact clubs are for ages 12-18", a:true},
+  {q:"Polio is completely eradicated worldwide", a:false},
+  {q:"Interact is part of Rotary International", a:true},
+  {q:"All Interact clubs are sponsored by schools", a:true},
+  {q:"Members pay large membership fees", a:false}
+];
+
+const mcqQuestions = [
+  {q:"Key area of service?", options:["Health","Environment","Community Service","All of the above"], a:"All of the above"},
+  {q:"When was Interact founded?", options:["1962","1975","1954","1980"], a:"1962"},
+  {q:"Rotary's polio campaign is called?", options:["PolioEradication","PolioPlus","StopPolio","PolioFree"], a:"PolioPlus"},
+  {q:"Interact clubs are primarily led by?", options:["Teachers","Rotarians","Students","Government Officials"], a:"Students"},
+  {q:"The Interact motto is?", options:["Do Good","Service Above Self","Act Locally","Lead Globally"], a:"Service Above Self"}
+];
+
+function fadeTo(nextId) {
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(s => s.classList.remove('active'));
+  setTimeout(() => {
+    document.getElementById(nextId).classList.add('active');
+  }, 200);
+}
+
+function beginQuiz() { fadeTo('infoScreen'); }
+
+function startQuiz() {
+  let name = document.getElementById('playerName').value.trim();
+  let country = document.getElementById('playerCountry').value.trim();
+  let club = document.getElementById('playerClub').value.trim();
+  
+  if(!name || !country || !club) { alert("Please fill all fields!"); return; }
+  
+  player = {name, country, club};
+  section = "general";
+  index = 0;
+  score = 0;
+  
+  fadeTo('quizScreen');
+  showQuestion();
+}
+
+function showQuestion() {
+  const qText = document.getElementById('questionText');
+  const ansDiv = document.getElementById('answerButtons');
+  const progress = document.getElementById('progressBar');
+  ansDiv.innerHTML = "";
+  const totalQuestions = generalQuestions.length + tfQuestions.length + mcqQuestions.length;
+  
+  let qObj;
+  if(section === "general") {
+    if(index >= generalQuestions.length) { section="tf"; index=0; return showQuestion(); }
+    qObj = generalQuestions[index];
+    qText.innerHTML = qObj.q;
+    ansDiv.innerHTML = `<input type="text" id="textAnswer" placeholder="Type answer"><br>
+                        <button onclick="submitAnswer()">Submit</button>`;
+    progress.style.width = ((index+1)/totalQuestions*100)+"%";
+  } else if(section==="tf") {
+    if(index>=tfQuestions.length) { section="mcq"; index=0; return showQuestion(); }
+    qObj = tfQuestions[index];
+    qText.innerHTML = qObj.q;
+    ansDiv.innerHTML = `<button onclick="submitAnswer(true)">True</button>
+                        <button onclick="submitAnswer(false)">False</button>`;
+    progress.style.width = ((generalQuestions.length+index+1)/totalQuestions*100)+"%";
+  } else if(section==="mcq") {
+    if(index>=mcqQuestions.length) { return showScore(); }
+    qObj = mcqQuestions[index];
+    qText.innerHTML = qObj.q;
+    qObj.options.forEach(opt=>{
+      let btn = document.createElement("button");
+      btn.innerText=opt;
+      btn.onclick=()=>submitAnswer(opt);
+      ansDiv.appendChild(btn);
+    });
+    progress.style.width = ((generalQuestions.length+tfQuestions.length+index+1)/totalQuestions*100)+"%";
+  }
+}
+
+function submitAnswer(ans) {
+  let correct;
+  if(section==="general"){
+    const input=document.getElementById('textAnswer').value.trim().toLowerCase();
+    correct = generalQuestions[index].a.toLowerCase();
+    if(input===correct) score++;
+  } else if(section==="tf") {
+    correct=tfQuestions[index].a;
+    if(ans===correct) score++;
+  } else if(section==="mcq") {
+    correct=mcqQuestions[index].a;
+    if(ans===correct) score++;
+  }
+  index++;
+  showQuestion();
+}
+
+function showScore() {
+  const totalQuestions = generalQuestions.length + tfQuestions.length + mcqQuestions.length;
+  fadeTo('scoreScreen');
+  document.getElementById('finalScore').innerText = `${player.name} (${player.country}, ${player.club})\nScore: ${score}/${totalQuestions}`;
+  
+  leaderboard.push({name:player.name,country:player.country,club:player.club,score});
+  leaderboard.sort((a,b)=>b.score-a.score);
+  if(leaderboard.length>10) leaderboard=leaderboard.slice(0,10);
+  localStorage.setItem('mcQuizLeaderboard', JSON.stringify(leaderboard));
+  
+  const tbody=document.querySelector('#leaderboardTable tbody');
+  tbody.innerHTML="";
+  leaderboard.forEach((p,i)=>{
+    tbody.innerHTML+=`<tr><td>${i+1}</td><td>${p.name}</td><td>${p.country}</td><td>${p.club}</td><td>${p.score}</td></tr>`;
+  });
+}
+
+function restartQuiz(){ fadeTo('welcomeScreen'); }
+</script>
+</body>
+</html>
